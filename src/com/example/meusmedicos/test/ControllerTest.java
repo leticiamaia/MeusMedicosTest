@@ -3,21 +3,30 @@ package com.example.meusmedicos.test;
 import java.util.Calendar;
 import java.util.List;
 
+import junit.framework.TestCase;
+
 import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
+import com.example.meusmedicos.Global;
 import com.example.meusmedicos.controllers.Controller;
 import com.example.meusmedicos.models.Consulta;
 import com.example.meusmedicos.models.Especialidade;
 import com.example.meusmedicos.models.Sintoma;
 
-import junit.framework.TestCase;
-
 public class ControllerTest extends TestCase {
 	
-	Controller controller;
-	
+	@Test
+	public void testConfigInicial() {
+		List<Consulta> consultas = Controller.getConsultas();
+		assertEquals(0, consultas.size());
+		
+		List<Sintoma> sintomas = Controller.getSintomas();
+		assertEquals(0, sintomas.size());
+		
+		List<Especialidade> especialidades = Controller.getEspecialidades();
+		assertEquals(0, especialidades.size());
+	}
 	
 	@Test
 	public void testAddConsulta() {
@@ -69,6 +78,24 @@ public class ControllerTest extends TestCase {
 		especialidades = Controller.getEspecialidades();
 		assertEquals(1,especialidades.size());
 		
+	}
+	
+	@Test
+	public void testEditConsulta() {
+		Consulta consulta = new Consulta("dr", new Especialidade("dermatologista"), Calendar.getInstance(), false);
+		Consulta consulta2 = new Consulta("dr2", new Especialidade("dermatologista"), Calendar.getInstance(), false);
+		Global.selectedConsulta = consulta;
+		Controller.editConsulta(consulta2);
+		assertEquals("dr2", consulta.getMedico());
+	}
+	
+	@Test
+	public void testEditSintoma() {
+		Sintoma sintoma = new Sintoma("dor", Calendar.getInstance(), 2, new Especialidade("dermatologista"), "...");
+		Sintoma sintoma2 = new Sintoma("pain", Calendar.getInstance(), 2, new Especialidade("dermatologista"), "...");
+		Global.selectedSintoma = sintoma;
+		Controller.editSintoma(sintoma2);
+		assertEquals("pain", sintoma.getTitulo());
 	}
 	
 	@After
